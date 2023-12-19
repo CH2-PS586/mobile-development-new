@@ -67,7 +67,7 @@
         app:startIconDrawable="@drawable/ic_baseline_person_24"
         tools:alpha="100">
 
-        <com.dicoding.elanhakim.storyApp.component.CustomEditText
+        <com.dicoding.elanhakim.fileManagerAI.component.CustomEditText
             android:id="@+id/emailEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -105,7 +105,7 @@
         app:startIconDrawable="@drawable/ic_baseline_lock_24"
         tools:alpha="100">
 
-        <com.dicoding.elanhakim.storyApp.component.CustomEditText
+        <com.dicoding.elanhakim.fileManagerAI.component.CustomEditText
             android:id="@+id/passwordEditText"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

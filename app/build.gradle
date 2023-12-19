@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.dicoding.elanhakim.storyApp"
+    namespace = "com.dicoding.elanhakim.fileManagerAI"
     compileSdk = 33
 
     defaultConfig {
-        applicationId = "com.dicoding.elanhakim.storyApp"
+        applicationId = "com.dicoding.elanhakim.fileManagerAI"
         minSdk = 24
         targetSdk = 33
         versionCode = 1
