@@ -9,6 +9,8 @@ import androidx.lifecycle.liveData
 import com.dicoding.elanhakim.fileManagerAI.data.local.pref.UserPreference
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.user.User
 import com.dicoding.elanhakim.fileManagerAI.data.remote.retrofit.RegisterRequest
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -187,25 +189,31 @@ class Repository private constructor(
             emit(ResultApi.Success(response))
             if (response.isSuccessful) {
                 // Get the file name from the URL or use a custom name
-                val file = File(getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename)
+                withContext(Dispatchers.IO) {
+                    val file = File(
+                        getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                        filename
+                    )
 
-                // Save the file
-                response.body()?.let { responseBody ->
-                    val outputStream = FileOutputStream(file)
-                    val inputStream = responseBody.byteStream()
-                    val buffer = ByteArray(4096)
-                    var bytesRead: Int
+                    // Save the file
+                    response.body()?.let { responseBody ->
+                        val outputStream = FileOutputStream(file)
+                        val inputStream = responseBody.byteStream()
+                        val buffer = ByteArray(4096)
+                        var bytesRead: Int
 
-                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                        outputStream.write(buffer, 0, bytesRead)
+                        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                            outputStream.write(buffer, 0, bytesRead)
+                        }
+
+                        outputStream.close()
+                        inputStream.close()
                     }
 
-                    outputStream.close()
-                    inputStream.close()
+                    // File downloaded successfully
+                    println("File downloaded successfully: $file")
+                    emit(ResultApi.Success(response))
                 }
-
-                // File downloaded successfully
-                println("File downloaded successfully: $file")
             } else {
                 // Handle unsuccessful response
                 println("Failed to download file. Response code: ${response.code()}")
@@ -223,25 +231,31 @@ class Repository private constructor(
             emit(ResultApi.Success(response))
             if (response.isSuccessful) {
                 // Get the file name from the URL or use a custom name
-                val file = File(getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename)
+                withContext(Dispatchers.IO) {
+                    val file = File(
+                        getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS),
+                        filename
+                    )
 
-                // Save the file
-                response.body()?.let { responseBody ->
-                    val outputStream = FileOutputStream(file)
-                    val inputStream = responseBody.byteStream()
-                    val buffer = ByteArray(4096)
-                    var bytesRead: Int
+                    // Save the file
+                    response.body()?.let { responseBody ->
+                        val outputStream = FileOutputStream(file)
+                        val inputStream = responseBody.byteStream()
+                        val buffer = ByteArray(4096)
+                        var bytesRead: Int
 
-                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
-                        outputStream.write(buffer, 0, bytesRead)
+                        while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                            outputStream.write(buffer, 0, bytesRead)
+                        }
+
+                        outputStream.close()
+                        inputStream.close()
                     }
 
-                    outputStream.close()
-                    inputStream.close()
+                    // File downloaded successfully
+                    println("File downloaded successfully: $file")
+                    emit(ResultApi.Success(response))
                 }
-
-                // File downloaded successfully
-                println("File downloaded successfully: $file")
             } else {
                 // Handle unsuccessful response
                 println("Failed to download file. Response code: ${response.code()}")
