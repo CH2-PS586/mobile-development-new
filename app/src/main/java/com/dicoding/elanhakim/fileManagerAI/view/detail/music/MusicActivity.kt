@@ -1,14 +1,20 @@
 package com.dicoding.elanhakim.fileManagerAI.view.detail.music
 
+import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dicoding.elanhakim.fileManagerAI.R
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.ResultApi
+import com.dicoding.elanhakim.fileManagerAI.data.remote.response.file.music.MusicResponse
 import com.dicoding.elanhakim.fileManagerAI.databinding.ActivityMusicBinding
 import com.dicoding.elanhakim.fileManagerAI.view.ViewModelFactory
+import com.dicoding.elanhakim.fileManagerAI.view.download.DownloadActivity
 
 class MusicActivity : AppCompatActivity() {
 
@@ -22,6 +28,9 @@ class MusicActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMusicBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.blue)))
+        supportActionBar?.title = getString(R.string.music)
 
         with(binding) {
             rvMusic.apply {
@@ -49,9 +58,20 @@ class MusicActivity : AppCompatActivity() {
                     is ResultApi.Error -> {
                         showLoading(false)
                     }
+
+                    else -> {}
                 }
             }
         }
+        musicAdapter.setOnItemClickCallback(object : MusicAdapter.OnItemClickCallback{
+            override fun onItemClicked(music: MusicResponse) {
+                Intent(this@MusicActivity, DownloadActivity::class.java).also {
+                    it.putExtra(DownloadActivity.NAME, music.filename)
+                    it.putExtra(DownloadActivity.CATEGORY, "music")
+                    startActivity(it)
+                }
+            }
+        })
     }
 
     private fun showLoading(isLoading: Boolean) {

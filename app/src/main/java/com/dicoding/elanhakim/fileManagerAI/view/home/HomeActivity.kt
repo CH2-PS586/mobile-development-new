@@ -1,6 +1,7 @@
 package com.dicoding.elanhakim.fileManagerAI.view.home
 
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
@@ -8,6 +9,7 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import com.dicoding.elanhakim.fileManagerAI.R
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.user.User
 import com.dicoding.elanhakim.fileManagerAI.view.ViewModelFactory
@@ -35,7 +37,7 @@ class HomeActivity : AppCompatActivity() {
         binding = ActivityHomeBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.blue)))
 
         homeViewModel.getSessionData().observe(this@HomeActivity) { user ->
             if (!user.isLogin) {
@@ -43,6 +45,7 @@ class HomeActivity : AppCompatActivity() {
                 intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
                 startActivity(intent)
             } else {
+                binding.tvUser.text = getString(R.string.greeting, user.username)
                 setUpAction(user)
             }
         }

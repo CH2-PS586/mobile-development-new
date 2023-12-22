@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="20dp"
-            android:text="@string/school"
+            android:text="@string/work"
             android:textSize="18sp"
             android:textStyle="bold" />
     </LinearLayout>

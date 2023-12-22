@@ -4,7 +4,15 @@
         <!-- Customize your light theme here. -->
         <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
         <item name="colorPrimary">@color/blue</item>
+        <item name="titleTextColor">@color/white</item>
+        <item name="android:actionOverflowButtonStyle">@style/OverflowButtonStyle</item>
+    </style>
+
+    <style name="OverflowButtonStyle" parent="Widget.AppCompat.ActionButton.Overflow">
+        <item name="android:tint">@color/white</item>
+        <item name="android:src">@drawable/ic_baseline_person_24</item>
     </style>
 
     <style name="Theme.FileManagerAI" parent="Base.Theme.FileManagerAI" />
+
 </resources>

@@ -1,14 +1,20 @@
 package com.dicoding.elanhakim.fileManagerAI.view.detail.others
 
+import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.dicoding.elanhakim.fileManagerAI.R
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.ResultApi
+import com.dicoding.elanhakim.fileManagerAI.data.remote.response.file.others.OthersResponse
 import com.dicoding.elanhakim.fileManagerAI.databinding.ActivityOthersBinding
 import com.dicoding.elanhakim.fileManagerAI.view.ViewModelFactory
+import com.dicoding.elanhakim.fileManagerAI.view.download.DownloadActivity
 
 class OthersActivity : AppCompatActivity() {
 
@@ -22,6 +28,9 @@ class OthersActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityOthersBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.blue)))
+        supportActionBar?.title = getString(R.string.others)
 
         with(binding) {
             rvOthers.apply {
@@ -52,6 +61,15 @@ class OthersActivity : AppCompatActivity() {
                 }
             }
         }
+        othersAdapter.setOnItemClickCallback(object : OthersAdapter.OnItemClickCallback{
+            override fun onItemClicked(file: OthersResponse) {
+                Intent(this@OthersActivity, DownloadActivity::class.java).also {
+                    it.putExtra(DownloadActivity.NAME, file.filename)
+                    it.putExtra(DownloadActivity.CATEGORY, "others")
+                    startActivity(it)
+                }
+            }
+        })
     }
 
     private fun showLoading(isLoading: Boolean) {

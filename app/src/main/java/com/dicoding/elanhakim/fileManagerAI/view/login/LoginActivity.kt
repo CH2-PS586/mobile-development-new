@@ -14,6 +14,7 @@ import com.dicoding.elanhakim.fileManagerAI.R
 import com.dicoding.elanhakim.fileManagerAI.view.home.HomeActivity
 import com.dicoding.elanhakim.fileManagerAI.view.ViewModelFactory
 import com.dicoding.elanhakim.fileManagerAI.databinding.ActivityLoginBinding
+import com.dicoding.elanhakim.fileManagerAI.view.signup.SignupActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -27,8 +28,11 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.hide()
+
         setupAction()
         playAnimation()
+        signupActivity()
     }
 
     private fun playAnimation() {
@@ -39,7 +43,7 @@ class LoginActivity : AppCompatActivity() {
             startDelay = 100
         }.start()
 
-        val signup = ObjectAnimator.ofFloat(binding.loginButton, View.ALPHA, 1f).setDuration(100)
+        val login = ObjectAnimator.ofFloat(binding.loginButton, View.ALPHA, 1f).setDuration(100)
         val title = ObjectAnimator.ofFloat(binding.titleTextView, View.ALPHA, 1f).setDuration(100)
         val messageTextView =
             ObjectAnimator.ofFloat(binding.messageTextView, View.ALPHA, 1f).setDuration(100)
@@ -51,6 +55,8 @@ class LoginActivity : AppCompatActivity() {
             ObjectAnimator.ofFloat(binding.passwordTextView, View.ALPHA, 1f).setDuration(100)
         val passwordEditText =
             ObjectAnimator.ofFloat(binding.passwordEditTextLayout, View.ALPHA, 1f).setDuration(100)
+        val signUp =
+            ObjectAnimator.ofFloat(binding.tvSignup, View.ALPHA, 1f).setDuration(100)
 
         AnimatorSet().apply {
             playSequentially(
@@ -60,7 +66,8 @@ class LoginActivity : AppCompatActivity() {
                 emailEditText,
                 passwordTextView,
                 passwordEditText,
-                signup
+                signUp,
+                login,
             )
             start()
         }
@@ -80,7 +87,7 @@ class LoginActivity : AppCompatActivity() {
                                 showLoading(false)
                                 loginViewModel.saveSession(result.data.loginResult)
                                 showToast(result.data.message)
-                                homeixActivity()
+                                homeIsActivity()
                             }
                             is ResultApi.Error -> {
                                 showLoading(false)
@@ -93,11 +100,19 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 
-    private fun homeixActivity() {
+    private fun homeIsActivity() {
         val intent = Intent(this, HomeActivity::class.java)
-        Toast.makeText(this, "Selamat Datang", Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, getString(R.string.welcome), Toast.LENGTH_SHORT).show()
         startActivity(intent)
         finish()
+    }
+
+    private fun signupActivity() {
+        binding.tvSignup.setOnClickListener {
+            val intent = Intent(this, SignupActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun showToast(message: String) {

@@ -28,8 +28,11 @@ class SignupActivity : AppCompatActivity() {
         binding = ActivitySignupBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.hide()
+
         setupAction()
         playAnimation()
+        loginActivity()
     }
 
     private fun playAnimation() {
@@ -54,6 +57,8 @@ class SignupActivity : AppCompatActivity() {
             ObjectAnimator.ofFloat(binding.passwordTextView, View.ALPHA, 1f).setDuration(100)
         val passwordEditText =
             ObjectAnimator.ofFloat(binding.passwordEditTextLayout, View.ALPHA, 1f).setDuration(100)
+        val login =
+            ObjectAnimator.ofFloat(binding.tvLogin, View.ALPHA, 1f).setDuration(100)
 
         AnimatorSet().apply {
             playSequentially(
@@ -64,7 +69,8 @@ class SignupActivity : AppCompatActivity() {
                 emailEditText,
                 passwordTextView,
                 passwordEditText,
-                signup
+                signup,
+                login
             )
             start()
         }
@@ -85,20 +91,28 @@ class SignupActivity : AppCompatActivity() {
 
                             is ResultApi.Success -> {
                                 showLoading(false)
-                                clearField()
                                 showToast(result.data.message)
-                                showDialog(binding.emailEditText.text.toString())
+                                showDialog(binding.nameEditText.text.toString())
+                                clearField()
                             }
 
                             is ResultApi.Error -> {
                                 showLoading(false)
-                                showToast("User Already Exist")
+                                showToast(getString(R.string.user_exist))
                             }
                         }
                     }
                 }
                 clearField()
             }
+        }
+    }
+
+    private fun loginActivity() {
+        binding.tvLogin.setOnClickListener {
+            val intent = Intent(this, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 
@@ -120,10 +134,10 @@ class SignupActivity : AppCompatActivity() {
 
     }
 
-    private fun showDialog(email: String) {
+    private fun showDialog(name: String) {
         AlertDialog.Builder(this).apply {
             setTitle(getString(R.string.success))
-            setMessage(getString(R.string.signup_success, email))
+            setMessage(getString(R.string.signup_success, name))
             setPositiveButton(getString(R.string.login)) { dialog, _ ->
                 dialog.dismiss()
                 val intent =

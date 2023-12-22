@@ -14,6 +14,7 @@ import com.dicoding.elanhakim.fileManagerAI.view.detail.music.MusicViewModel
 import com.dicoding.elanhakim.fileManagerAI.view.detail.others.OthersViewModel
 import com.dicoding.elanhakim.fileManagerAI.view.detail.picture.PictureViewModel
 import com.dicoding.elanhakim.fileManagerAI.view.detail.video.VideoViewModel
+import com.dicoding.elanhakim.fileManagerAI.view.download.DownloadViewModel
 import com.dicoding.elanhakim.fileManagerAI.view.upload.UploadViewModel
 
 class ViewModelFactory private constructor(
@@ -53,6 +54,9 @@ class ViewModelFactory private constructor(
 
         } else if (modelClass.isAssignableFrom(UploadViewModel::class.java)) {
             return UploadViewModel(repository) as T
+
+        } else if (modelClass.isAssignableFrom(DownloadViewModel::class.java)) {
+            return DownloadViewModel(repository) as T
 
         }
 

@@ -1,5 +1,8 @@
 package com.dicoding.elanhakim.fileManagerAI.data.local.repository
 
+import android.os.Environment
+import android.os.Environment.getExternalStoragePublicDirectory
+import android.webkit.MimeTypeMap
 import com.dicoding.elanhakim.fileManagerAI.data.remote.retrofit.ApiService
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.ResultApi
 import androidx.lifecycle.liveData
@@ -12,6 +15,7 @@ import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.HttpException
 import java.io.File
+import java.io.FileOutputStream
 
 class Repository private constructor(
     private val apiService: ApiService,
@@ -44,7 +48,8 @@ class Repository private constructor(
         emit(ResultApi.Loading)
 
         val requestBody = description.toRequestBody("text/plain".toMediaType())
-        val requestFile = file.asRequestBody()
+        val fileMediaType = file.guessMediaType().toMediaType()
+        val requestFile = file.asRequestBody(fileMediaType)
 
         val multiPartBody = MultipartBody.Part.createFormData(
             "files",
@@ -58,6 +63,11 @@ class Repository private constructor(
         } catch (e: HttpException) {
             emit(ResultApi.Error(e.message()))
         }
+    }
+
+    private fun File.guessMediaType(): String {
+        val extension = MimeTypeMap.getFileExtensionFromUrl(absolutePath)
+        return MimeTypeMap.getSingleton().getMimeTypeFromExtension(extension) ?: "application/octet-stream"
     }
 
     fun getMusic(token: String) = liveData {
@@ -100,10 +110,10 @@ class Repository private constructor(
         }
     }
 
-    fun getSchool(token: String) = liveData {
+    fun getWork(token: String) = liveData {
         emit(ResultApi.Loading)
         try {
-            val successResponse = apiService.getSchool("Bearer $token")
+            val successResponse = apiService.getWork("Bearer $token")
             emit(ResultApi.Success(successResponse))
         } catch (e: HttpException) {
             emit(ResultApi.Error(e.message()))
@@ -167,6 +177,78 @@ class Repository private constructor(
             emit(ResultApi.Success(successResponse))
         } catch (e: HttpException) {
             emit(ResultApi.Error(e.message()))
+        }
+    }
+
+    fun downloadNoLabel(token: String, category: String, filename: String) = liveData {
+        emit(ResultApi.Loading)
+        try {
+            val response = apiService.downloadNoLabel("Bearer $token", category, filename)
+            emit(ResultApi.Success(response))
+            if (response.isSuccessful) {
+                // Get the file name from the URL or use a custom name
+                val file = File(getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename)
+
+                // Save the file
+                response.body()?.let { responseBody ->
+                    val outputStream = FileOutputStream(file)
+                    val inputStream = responseBody.byteStream()
+                    val buffer = ByteArray(4096)
+                    var bytesRead: Int
+
+                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                        outputStream.write(buffer, 0, bytesRead)
+                    }
+
+                    outputStream.close()
+                    inputStream.close()
+                }
+
+                // File downloaded successfully
+                println("File downloaded successfully: $file")
+            } else {
+                // Handle unsuccessful response
+                println("Failed to download file. Response code: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            // Handle exceptions
+            println("Error downloading file: ${e.message}")
+        }
+    }
+
+    fun downloadWithLabel(token: String, category: String, label: String, filename: String) = liveData {
+        emit(ResultApi.Loading)
+        try {
+            val response = apiService.downloadWithLabel("Bearer $token", category, label, filename)
+            emit(ResultApi.Success(response))
+            if (response.isSuccessful) {
+                // Get the file name from the URL or use a custom name
+                val file = File(getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), filename)
+
+                // Save the file
+                response.body()?.let { responseBody ->
+                    val outputStream = FileOutputStream(file)
+                    val inputStream = responseBody.byteStream()
+                    val buffer = ByteArray(4096)
+                    var bytesRead: Int
+
+                    while (inputStream.read(buffer).also { bytesRead = it } != -1) {
+                        outputStream.write(buffer, 0, bytesRead)
+                    }
+
+                    outputStream.close()
+                    inputStream.close()
+                }
+
+                // File downloaded successfully
+                println("File downloaded successfully: $file")
+            } else {
+                // Handle unsuccessful response
+                println("Failed to download file. Response code: ${response.code()}")
+            }
+        } catch (e: Exception) {
+            // Handle exceptions
+            println("Error downloading file: ${e.message}")
         }
     }
 

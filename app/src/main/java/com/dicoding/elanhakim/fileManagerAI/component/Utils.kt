@@ -1,106 +1,60 @@
 package com.dicoding.elanhakim.fileManagerAI.component
 
-import android.content.ContentValues
 import android.content.Context
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
-import android.graphics.Matrix
 import android.net.Uri
-import android.os.Build
-import android.os.Environment
-import android.provider.MediaStore
-import androidx.core.content.FileProvider
-import androidx.exifinterface.media.ExifInterface
-import com.loopj.android.http.BuildConfig
-import java.io.ByteArrayOutputStream
+import android.provider.OpenableColumns
 import java.io.File
 import java.io.FileOutputStream
-import java.io.InputStream
-import java.text.SimpleDateFormat
-import java.util.Date
+import java.io.IOException
 import java.util.Locale
 
-private const val MAXIMAL_SIZE = 1000000 //1 MB
-private const val FILENAME_FORMAT = "yyyyMMdd_HHmmss"
-private val timeStamp: String = SimpleDateFormat(FILENAME_FORMAT, Locale.US).format(Date())
-
-fun getImageUri(context: Context): Uri {
-    var uri: Uri? = null
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-        val contentValues = ContentValues().apply {
-            put(MediaStore.MediaColumns.DISPLAY_NAME, "$timeStamp.jpg")
-            put(MediaStore.MediaColumns.MIME_TYPE, "image/jpeg")
-            put(MediaStore.MediaColumns.RELATIVE_PATH, "Pictures/MyCamera/")
+fun uriToFile(fileUri: Uri, context: Context): File? {
+    try {
+        val inputStream = context.contentResolver.openInputStream(fileUri)
+        inputStream?.use { input ->
+            val fileName = getFileNameFromUri(fileUri, context)
+            val fileExtension = getFileExtension(fileName)
+            val myFile = createCustomTempFile(context, fileName, fileExtension)
+            val outputStream = FileOutputStream(myFile)
+            outputStream.use { output ->
+                val buffer = ByteArray(DEFAULT_BUFFER_SIZE)
+                var bytesRead: Int
+                while (input.read(buffer).also { bytesRead = it } > 0) {
+                    output.write(buffer, 0, bytesRead)
+                }
+                return myFile
+            }
         }
-        uri = context.contentResolver.insert(
-            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
-            contentValues
-        )
+    } catch (e: IOException) {
+        e.printStackTrace()
     }
-    return uri ?: getImageUriForPreQ(context)
+    return null
 }
 
-private fun getImageUriForPreQ(context: Context): Uri {
-    val filesDir = context.getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-    val imageFile = File(filesDir, "/MyCamera/$timeStamp.jpg")
-    if (imageFile.parentFile?.exists() == false) imageFile.parentFile?.mkdir()
-    return FileProvider.getUriForFile(
-        context,
-        "${BuildConfig.APPLICATION_ID}.fileprovider",
-        imageFile
-    )
-}
-
-fun createCustomTempFile(context: Context): File {
-    val filesDir = context.externalCacheDir
-    return File.createTempFile(timeStamp, ".jpg", filesDir)
-}
-
-fun uriToFile(imageUri: Uri, context: Context): File {
-    val myFile = createCustomTempFile(context)
-    val inputStream = context.contentResolver.openInputStream(imageUri) as InputStream
-    val outputStream = FileOutputStream(myFile)
-    val buffer = ByteArray(1024)
-    var length: Int
-    while (inputStream.read(buffer).also { length = it } > 0) outputStream.write(buffer, 0, length)
-    outputStream.close()
-    inputStream.close()
-    return myFile
-}
-
-fun File.reduceFileImage(): File {
-    val file = this
-    val bitmap = BitmapFactory.decodeFile(file.path).getRotatedBitmap(file)
-    var compressQuality = 100
-    var streamLength: Int
-    do {
-        val bmpStream = ByteArrayOutputStream()
-        bitmap?.compress(Bitmap.CompressFormat.JPEG, compressQuality, bmpStream)
-        val bmpPicByteArray = bmpStream.toByteArray()
-        streamLength = bmpPicByteArray.size
-        compressQuality -= 5
-    } while (streamLength > MAXIMAL_SIZE)
-    bitmap?.compress(Bitmap.CompressFormat.JPEG, compressQuality, FileOutputStream(file))
-    return file
-}
-
-fun Bitmap.getRotatedBitmap(file: File): Bitmap? {
-    val orientation = ExifInterface(file).getAttributeInt(
-        ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_UNDEFINED
-    )
-    return when (orientation) {
-        ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(this, 90F)
-        ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(this, 180F)
-        ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(this, 270F)
-        ExifInterface.ORIENTATION_NORMAL -> this
-        else -> this
+private fun getFileExtension(fileName: String): String {
+    val dotIndex = fileName.lastIndexOf('.')
+    return if (dotIndex == -1 || dotIndex >= fileName.length - 1) {
+        "txt" // Default extension if not found or if the dot is at the end
+    } else {
+        fileName.substring(dotIndex + 1).toLowerCase(Locale.ROOT)
     }
 }
 
-fun rotateImage(source: Bitmap, angle: Float): Bitmap? {
-    val matrix = Matrix()
-    matrix.postRotate(angle)
-    return Bitmap.createBitmap(
-        source, 0, 0, source.width, source.height, matrix, true
-    )
+private fun createCustomTempFile(context: Context, fileName: String, fileExtension: String): File {
+    // Implement your logic to create a custom temp file
+    // For example, you can create a file in the cache directory
+    val cacheDir = context.cacheDir
+    return File.createTempFile(fileName, ".$fileExtension", cacheDir)
 }
+
+private fun getFileNameFromUri(uri: Uri, context: Context): String {
+    val cursor = context.contentResolver.query(uri, null, null, null, null)
+    cursor?.use {
+        val nameIndex = it.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+        it.moveToFirst()
+        return it.getString(nameIndex)
+    }
+    return "unknown_file"
+}
+
+private const val DEFAULT_BUFFER_SIZE = 1024 * 4

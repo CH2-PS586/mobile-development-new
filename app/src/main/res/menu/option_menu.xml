@@ -5,8 +5,7 @@
 
     <group
         android:id="@+id/menu"
-        android:menuCategory="container"
-        android:backgroundTint="@color/blue">
+        android:menuCategory="container">
         <item
             android:id="@+id/menu1"
             android:title="@string/logout"

@@ -1,20 +1,16 @@
 package com.dicoding.elanhakim.fileManagerAI.view.upload
 
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.os.Environment
-import android.provider.DocumentsContract
-import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
-import androidx.core.net.toUri
+import androidx.core.content.ContextCompat
 import com.dicoding.elanhakim.fileManagerAI.R
-import com.dicoding.elanhakim.fileManagerAI.component.reduceFileImage
 import com.dicoding.elanhakim.fileManagerAI.component.uriToFile
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.ResultApi
 import com.dicoding.elanhakim.fileManagerAI.databinding.ActivityUploadBinding
@@ -36,31 +32,12 @@ class UploadActivity : AppCompatActivity() {
         binding = ActivityUploadBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.blue)))
+        supportActionBar?.title = getString(R.string.upload)
+
         binding.galleryButton.setOnClickListener { openDirectory() }
         binding.uploadButton.setOnClickListener { uploadFile() }
     }
-
-//    private fun startGallery() {
-//        launcherGallery.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-//    }
-
-//    private val launcherGallery = registerForActivityResult(
-//        ActivityResultContracts.PickVisualMedia()
-//    ) { uri: Uri? ->
-//        if (uri != null) {
-//            currentImageUri = uri
-//            showImage()
-//        } else {
-//            Log.d("Photo Picker", "No media selected")
-//        }
-//    }
-
-//    private fun showImage() {
-//        currentImageUri?.let {
-//            Log.d("Image URI", "showImage: $it")
-//            binding.previewImageView.setImageURI(it)
-//        }
-//    }
 
     private val launcher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
         if (result.resultCode == RESULT_OK) {
@@ -90,51 +67,29 @@ class UploadActivity : AppCompatActivity() {
 
     }
 
-//    private fun uploadImage(token: String) {
-//        currentImageUri?.let { uri ->
-//            val file = uriToFile(uri, this).reduceFileImage()
-//            Log.d("Image File", "showImage: ${file.path}")
-//            val description = "this is the picture description"
-//            showLoading(true)
-//
-//            uploadViewModel.uploadFile(file, description, token).observe(this) { result ->
-//                when(result) {
-//                    is ResultApi.Loading -> {
-//                        showLoading(true)
-//                    }
-//                    is ResultApi.Success -> {
-//                        showLoading(false)
-//                        showToast("File has been Uploaded successfully")
-//                        homeIsActivity()
-//                    }
-//                    is ResultApi.Error -> {
-//                        showLoading(false)
-//                        showToast("Upload File Failed")
-//                    }
-//                }
-//            }
-//        }
-//    }
-
     private fun uploadFile() {
         currentFileUri?.let { uri ->
             val file = uriToFile(uri, this)
             val description = "this is the file description"
             showLoading(true)
             uploadViewModel.getSessionData().observe(this@UploadActivity) { user ->
-                uploadViewModel.uploadFile(file, description, user.accessToken).observe(this) { result ->
-                    when(result) {
-                        is ResultApi.Loading -> {
-                            showLoading(true)
-                        }
-                        is ResultApi.Success -> {
-                            showLoading(false)
-                            showToast("File has been Uploaded successfully")
-                            homeIsActivity()
-                        }
-                        is ResultApi.Error -> {
-                            showLoading(false)
-                            showToast("Upload File Failed")
+                if (file != null) {
+                    uploadViewModel.uploadFile(file, description, user.accessToken).observe(this) { result ->
+                        when(result) {
+                            is ResultApi.Loading -> {
+                                showLoading(true)
+                            }
+
+                            is ResultApi.Success -> {
+                                showLoading(false)
+                                showToast(getString(R.string.upload_success))
+                                homeIsActivity()
+                            }
+
+                            is ResultApi.Error -> {
+                                showLoading(false)
+                                showToast(getString(R.string.upload_failed))
+                            }
                         }
                     }
                 }

@@ -16,21 +16,16 @@
     <string name="logout">Keluar</string>
     <string name="language">Bahasa</string>
 
-    <string name="greeting">Hai %1$s,</string>
+    <string name="greeting">Halo %s, Selamat Datang!</string>
     <string name="app_title">File Manager AI</string>
-    <string name="camera">Kamera</string>
     <string name="upload">Unggah Berkas</string>
-    <string name="gallery">Galeri</string>
-    <string name="description_here">Diskripsi Disini</string>
 
     <string name="yes">Iya Benar</string>
-    <string name="empty_image_warning">Perlu mengisi foto terlebih dahulu</string>
     <string name="password_strict">Gunakan Minimal 8 huruf</string>
     <string name="incorrect_format">Format masukan salah</string>
     <string name="error">Gagal!</string>
     <string name="success">Berhasil!</string>
     <string name="signup_success">Akun mu dengan nama %s sudah tersedia. Mari mulai perjalanan kita!</string>
-    <string name="detail_story_image">Detail Story Gambar</string>
     <string name="are_you_sure">Anda Yakin nih?</string>
 
     <string name="retry">Ulang</string>
@@ -52,10 +47,21 @@
     <string name="selfie">Selfie</string>
 
     <string name="personal">Pribadi</string>
-    <string name="school">Sekolah</string>
+    <string name="work">Kerjaan</string>
 
     <string name="no_data">Tidak Ada Data yang Tersedia</string>
 
     <string name="file">Cari File</string>
+
+    <string name="not_signup">Belum punya akun? Daftar di sini</string>
+    <string name="login_here">Sudah punya akun? Masuk di sini</string>
+
+    <string name="download">Unduh</string>
+    <string name="user_exist">Pengguna Sudah Ada</string>
+    <string name="upload_success">File Sukses Diunggah</string>
+    <string name="upload_failed">File Gagal Diunggah</string>
+    <string name="welcome">Selamat Datang</string>
+    <string name="download_success">Unduh Sukses</string>
+    <string name="download_failed">Download Gagal</string>
 
 </resources>

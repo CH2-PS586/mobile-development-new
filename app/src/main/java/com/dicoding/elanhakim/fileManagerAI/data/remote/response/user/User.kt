@@ -1,6 +1,7 @@
 package com.dicoding.elanhakim.fileManagerAI.data.remote.response.user
 
 import com.google.gson.annotations.SerializedName
+
 data class User(
 
     @field:SerializedName("username")

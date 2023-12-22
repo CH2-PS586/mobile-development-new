@@ -1,9 +1,12 @@
 package com.dicoding.elanhakim.fileManagerAI.view.detail.picture
 
 import android.content.Intent
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.core.content.ContextCompat
+import com.dicoding.elanhakim.fileManagerAI.R
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.user.User
 import com.dicoding.elanhakim.fileManagerAI.databinding.ActivityPictureBinding
 import com.dicoding.elanhakim.fileManagerAI.view.ViewModelFactory
@@ -26,7 +29,8 @@ class PictureActivity : AppCompatActivity() {
         binding = ActivityPictureBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        supportActionBar
+        supportActionBar?.setBackgroundDrawable(ColorDrawable(ContextCompat.getColor(this, R.color.blue)))
+        supportActionBar?.title = getString(R.string.picture)
 
         pictureViewModel.getSessionData().observe(this@PictureActivity) { user ->
             setUpAction(user)

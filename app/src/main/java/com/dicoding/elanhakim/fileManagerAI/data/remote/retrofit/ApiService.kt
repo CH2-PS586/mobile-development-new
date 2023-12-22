@@ -1,9 +1,8 @@
 package com.dicoding.elanhakim.fileManagerAI.data.remote.retrofit
 
-import com.dicoding.elanhakim.fileManagerAI.data.remote.response.file.UploadResponse
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.file.UploadResponseItem
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.file.document.DocumentResponse
-import com.dicoding.elanhakim.fileManagerAI.data.remote.response.file.music.MusicResponseItem
+import com.dicoding.elanhakim.fileManagerAI.data.remote.response.file.music.MusicResponse
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.file.others.OthersResponse
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.file.picture.PictureResponse
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.file.video.VideoResponse
@@ -11,6 +10,8 @@ import com.dicoding.elanhakim.fileManagerAI.data.remote.response.user.LoginRespo
 import com.dicoding.elanhakim.fileManagerAI.data.remote.response.user.RegisterResponse
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -19,6 +20,8 @@ import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
+import retrofit2.http.Path
+import retrofit2.http.Streaming
 
 interface ApiService {
 
@@ -39,13 +42,13 @@ interface ApiService {
     suspend fun upload(
         @Header("Authorization") token: String,
         @Part file: MultipartBody.Part,
-        @Part("files") files: RequestBody,
+        @Part("description") files: RequestBody,
     ): List<UploadResponseItem>
 
     @GET("files/music")
     suspend fun getMusic(
         @Header("Authorization") token: String
-    ): List<MusicResponseItem>
+    ): List<MusicResponse>
 
     @GET("files/video")
     suspend fun getVideo(
@@ -63,7 +66,7 @@ interface ApiService {
     ): List<DocumentResponse>
 
     @GET("files/document/School")
-    suspend fun getSchool(
+    suspend fun getWork(
         @Header("Authorization") token: String
     ): List<DocumentResponse>
 
@@ -96,6 +99,23 @@ interface ApiService {
     suspend fun getSelfie(
         @Header("Authorization") token: String
     ): List<PictureResponse>
+
+    @GET("getfiles/{category}/{filename}")
+    @Streaming
+    suspend fun downloadNoLabel(
+        @Header("Authorization") token: String,
+        @Path("category") category: String,
+        @Path("filename") filename: String,
+    ): Response<ResponseBody>
+
+    @GET("getfiles/{category}/{label}/{filename}")
+    @Streaming
+    suspend fun downloadWithLabel(
+        @Header("Authorization") token: String,
+        @Path("category") category: String,
+        @Path("label") label: String,
+        @Path("filename") filename: String,
+    ): Response<ResponseBody>
 
 }
 

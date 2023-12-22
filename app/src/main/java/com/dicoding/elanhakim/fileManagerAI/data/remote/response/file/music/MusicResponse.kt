@@ -2,7 +2,7 @@ package com.dicoding.elanhakim.fileManagerAI.data.remote.response.file.music
 
 import com.google.gson.annotations.SerializedName
 
-data class MusicResponseItem(
+data class MusicResponse(
 
 	@field:SerializedName("filename")
 	val filename: String,

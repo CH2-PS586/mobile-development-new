@@ -9,6 +9,11 @@ import com.dicoding.elanhakim.fileManagerAI.databinding.ItemFilesBinding
 class VideoAdapter : RecyclerView.Adapter<VideoItemView>(){
 
     private val list = ArrayList<VideoResponse>()
+    private var onItemClickCallback: OnItemClickCallback? = null
+
+    fun setOnItemClickCallback (onItemClickCallback: OnItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VideoItemView {
         val view = ItemFilesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -20,6 +25,7 @@ class VideoAdapter : RecyclerView.Adapter<VideoItemView>(){
     override fun onBindViewHolder(holder: VideoItemView, position: Int) {
         val data = list[position]
         holder.bind(data)
+        holder.itemView.setOnClickListener { onItemClickCallback?.onItemClicked(data) }
     }
 
     fun setList(video: List<VideoResponse>){
@@ -30,6 +36,10 @@ class VideoAdapter : RecyclerView.Adapter<VideoItemView>(){
     fun clearList() {
         list.clear()
         notifyDataSetChanged()
+    }
+
+    interface OnItemClickCallback{
+        fun onItemClicked(data: VideoResponse)
     }
 
 }

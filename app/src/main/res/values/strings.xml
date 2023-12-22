@@ -16,21 +16,16 @@
     <string name="logout">Log Out</string>
     <string name="language">Language</string>
 
-    <string name="greeting">Hi %1$s,</string>
+    <string name="greeting">Hello %s, Welcome!</string>
     <string name="app_title">File Manager AI</string>
-    <string name="camera">Camera</string>
     <string name="upload">Upload File</string>
-    <string name="gallery">Gallery</string>
-    <string name="description_here">Description Here</string>
 
     <string name="yes">Yes, Correct</string>
-    <string name="empty_image_warning">Please fill in the photo first</string>
     <string name="password_strict">Use a minimum of 8 letters</string>
     <string name="incorrect_format">Incorrect format</string>
     <string name="error">Failed!</string>
     <string name="success">Success!</string>
     <string name="signup_success">Your account with the name %s is already available. Lets begin our journey!</string>
-    <string name="detail_story_image">Detail Story Image</string>
     <string name="are_you_sure">Are you sure?</string>
 
     <string name="retry">Retry</string>
@@ -52,10 +47,21 @@
     <string name="selfie">Selfie</string>
 
     <string name="personal">Personal</string>
-    <string name="school">School</string>
+    <string name="work">Work</string>
 
     <string name="no_data">No Data Available</string>
 
     <string name="file">Browse File</string>
+
+    <string name="not_signup">Dont have account yet? Sign Up here</string>
+    <string name="login_here">Already have an account? Log In here</string>
+
+    <string name="download">Download</string>
+    <string name="user_exist">User Already Exist</string>
+    <string name="upload_success">File has been Uploaded successfully</string>
+    <string name="upload_failed">Upload File Failed</string>
+    <string name="welcome">Welcome</string>
+    <string name="download_success">Download Success</string>
+    <string name="download_failed">Download Failed</string>
 
 </resources>

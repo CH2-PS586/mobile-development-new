@@ -9,6 +9,11 @@ import com.dicoding.elanhakim.fileManagerAI.databinding.ItemFilesBinding
 class OthersAdapter : RecyclerView.Adapter<OthersItemView>(){
 
     private val list = ArrayList<OthersResponse>()
+    private var onItemClickCallback: OnItemClickCallback? = null
+
+    fun setOnItemClickCallback (onItemClickCallback: OnItemClickCallback) {
+        this.onItemClickCallback = onItemClickCallback
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OthersItemView {
         val view = ItemFilesBinding.inflate(LayoutInflater.from(parent.context), parent, false)
@@ -20,6 +25,7 @@ class OthersAdapter : RecyclerView.Adapter<OthersItemView>(){
     override fun onBindViewHolder(holder: OthersItemView, position: Int) {
         val data = list[position]
         holder.bind(data)
+        holder.itemView.setOnClickListener { onItemClickCallback?.onItemClicked(data) }
     }
 
     fun setList(others: List<OthersResponse>){
@@ -30,6 +36,10 @@ class OthersAdapter : RecyclerView.Adapter<OthersItemView>(){
     fun clearList() {
         list.clear()
         notifyDataSetChanged()
+    }
+
+    interface OnItemClickCallback{
+        fun onItemClicked(data: OthersResponse)
     }
 
 }
